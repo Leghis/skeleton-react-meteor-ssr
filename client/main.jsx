@@ -7,23 +7,51 @@ import {
   InMemoryCache,
   ApolloProvider, HttpLink
 } from "@apollo/client";
-
-// const client = new ApolloClient({
-//   uri: 'http://localhost:4000/',
-//   cache: new InMemoryCache()
-// });
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom";
 
 //connecting the Graphql client to the Apollo server
-const cache = new InMemoryCache();
-let client = new ApolloClient({
-  link: new HttpLink({uri: 'http://localhost:4000', fetch}),
-  cache
-})
+// const client = new ApolloClient({
+//   link: new HttpLink({uri: 'http://localhost:4000', fetch}),
+//   cache : new InMemoryCache()
+// })
+
+const client = new ApolloClient({
+  uri: 'http://localhost:4000/',
+  cache: new InMemoryCache(),
+  ssrForceFetchDelay: 100,
+});
 
 onPageLoad(sink => {
   sink.renderIntoElementById("react-target", renderToString(
     <ApolloProvider client={client}>
-      <App/>
+      <Router>
+        <Switch>
+          <Route exact path="/" component={App}/>
+        </Switch>
+      </Router>
     </ApolloProvider>
   ))
 })
+
+
+// if (Meteor.isClient) {
+//   // subscribe by name to the publication.
+//   Meteor.startup(function () {
+//     // Meteor.subscribe('todos');
+//     let data = Meteor.subscribe('load-data',{
+//       onReady: function () {
+//         console.log('ready')
+//       },
+//
+//       onStop: function () {
+//         console.log('stop')
+//       }
+//     })
+//
+//     console.log()
+//   })
+// }
