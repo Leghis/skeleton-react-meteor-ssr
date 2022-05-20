@@ -9,8 +9,8 @@ import {
   ApolloClient, ApolloProvider, createHttpLink, gql, InMemoryCache, useQuery
 } from '@apollo/client';
 import {StaticRouter} from "react-router-dom";
-import {Html} from "../imports/ui/components/html";
 
+//Initial state
  let initialState
 
 onPageLoad(async (sink) => {
@@ -26,6 +26,7 @@ onPageLoad(async (sink) => {
     }),
   };
 
+  //React tree rendering, dcomponent rendering via static routes
   const Home = () =>(
     <ApolloProvider client={context.client}>
       <StaticRouter location={sink.request.url}>
@@ -34,11 +35,12 @@ onPageLoad(async (sink) => {
     </ApolloProvider>
   );
 
+  //Use of getDataFromTree to retrieve data from our query
+  //Graphql executing on our different components
   await getDataFromTree(Home()).then((content) => {
     // Extract the entirety of the Apollo Client cache's current state
     initialState = context.client.extract()
   });
-
 
 
   //Render page in ssr mode
