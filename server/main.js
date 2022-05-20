@@ -56,13 +56,13 @@ onPageLoad(sink => {
         `)
 });
 
-// //Launching a subscription once the dispatch has been executed
-// store.subscribe(() => {
-//   initialData = store.getState()
-//   console.log(initialData)
-//
-// })
-//
-// //Use of dispatch to launch the contact recovery action
-// store.dispatch({type: 'GET_CONTACTS'})
+//Launching a subscription once the dispatch has been executed
+store.subscribe(() => {
+  initialData = store.getState()
+  console.log(initialData)
+
+})
+
+//Use of dispatch to launch the contact recovery action
+store.dispatch({type: 'GET_CONTACTS'})
 
