@@ -2,6 +2,10 @@ import React from "react";
 import {onPageLoad} from "meteor/server-render";
 import {App} from '/imports/ui/App';
 import {renderToString} from "react-dom/server";
+import {applyMiddleware, createStore} from 'redux';
+import Reducers from "../imports/Reducer";
+import {Provider} from "react-redux";
+
 import {
   ApolloClient,
   InMemoryCache,
@@ -12,6 +16,8 @@ import {
   Switch,
   Route,
 } from "react-router-dom";
+import ReactDOM from "react-dom";
+import thunk from "redux-thunk";
 
 //connecting the Graphql client to the Apollo server
 // const client = new ApolloClient({
@@ -19,39 +25,26 @@ import {
 //   cache : new InMemoryCache()
 // })
 
+//Define le store redux
+const store = createStore(Reducers);
+
+
 const client = new ApolloClient({
   uri: 'http://localhost:4000/',
   cache: new InMemoryCache(),
   ssrForceFetchDelay: 100,
 });
 
-onPageLoad(sink => {
-  sink.renderIntoElementById("react-target", renderToString(
-    <ApolloProvider client={client}>
-      <Router>
-        <Switch>
-          <Route exact path="/" component={App}/>
-        </Switch>
-      </Router>
-    </ApolloProvider>
-  ))
-})
 
-
-// if (Meteor.isClient) {
-//   // subscribe by name to the publication.
-//   Meteor.startup(function () {
-//     // Meteor.subscribe('todos');
-//     let data = Meteor.subscribe('load-data',{
-//       onReady: function () {
-//         console.log('ready')
-//       },
-//
-//       onStop: function () {
-//         console.log('stop')
-//       }
-//     })
-//
-//     console.log()
-//   })
-// }
+onPageLoad(() => {
+  ReactDOM.render(
+    <Provider store={store}>
+      <ApolloProvider client={client}>
+        <Router>
+          <Switch>
+            <Route exact path="/" component={App}/>
+          </Switch>
+        </Router>
+      </ApolloProvider>
+    </Provider>, document.getElementById('react-target'));
+});
